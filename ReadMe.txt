@@ -1,0 +1,1 @@
+A simple demo which demonstates the usage of libMsgbus from Go
