@@ -5,23 +5,31 @@ import (
 	"fmt"
 	"log"
 	"os"
+
 	"skidata.com/lib/libmsgbus/c_libmsgbus"
 )
 
-func onMsg(msgId, msgType, range_first, range_last, createTs int64, topic, originTenantId, originBlName, originDeviceId, payload string) {
-	fmt.Println("onMsg: ",topic,originTenantId, originBlName, originDeviceId, payload)
+const (
+	tenantId = "arniTheTenant"
+	deviceId = "ltanar"
+)
+
+func MsgHandler(msgId, msgType, range_first, range_last, createTs int64, topic, originTenantId, originBlName, originDeviceId, payload string) {
+	fmt.Println("onMsg: ", topic, originTenantId, originBlName, originDeviceId, payload)
 }
-func onNetworkEvent(eventCode int64, eventText, tenantId, nodeName string) {
-	fmt.Println("onNetworkEvent: ",nodeName,eventText,tenantId)
+func NetworkEventHandler(eventCode int64, eventText, tenantId, nodeName string) {
+	fmt.Println("onNetworkEvent: ", nodeName, eventText, tenantId)
 }
 func main() {
 
 	if len(os.Args) != 2 {
-		log.Fatal("Usage: ",os.Args[0],"<blname>")
+		log.Fatal("Usage: ", os.Args[0], "<blname>")
 	}
-	if err := c_libmsgbus.Init("arni",os.Args[1],"ltanar","./data",
-		onMsg, onNetworkEvent); err != nil {
-			log.Fatal(err)
+	blname := os.Args[1]
+
+	if err := c_libmsgbus.Init(tenantId, blname, deviceId, "./data",
+		MsgHandler, NetworkEventHandler); err != nil {
+		log.Fatal(err)
 	}
 	defer c_libmsgbus.Destroy()
 
@@ -29,7 +37,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	if err := c_libmsgbus.Subscribe("testtopic","","1", c_libmsgbus.FLAG_SUBSCRIBE_NEWORIGINFROMSTART); err != nil {
+	if err := c_libmsgbus.Subscribe("testtopic", "", "1", c_libmsgbus.FLAG_SUBSCRIBE_NEWORIGINFROMSTART); err != nil {
 		log.Fatal(err)
 	}
 
@@ -40,8 +48,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("Sending:"+text)
-		if err := c_libmsgbus.Send("testtopic",text, 0, c_libmsgbus.AUTO_MSG_ID); err != nil {
+		fmt.Println("Sending:" + text)
+		if err := c_libmsgbus.Send("testtopic", text, 0, c_libmsgbus.AUTO_MSG_ID); err != nil {
 			log.Fatal(err)
 		}
 	}
