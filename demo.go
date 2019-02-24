@@ -14,10 +14,10 @@ const (
 	deviceId = "ltanar"
 )
 
-func MsgHandler(msgId, msgType, range_first, range_last, createTs int64, topic, originTenantId, originBlName, originDeviceId, payload string) {
+func msgHandler(msgId, msgType, range_first, range_last, createTs int64, topic, originTenantId, originBlName, originDeviceId, payload string) {
 	fmt.Println("onMsg: ", topic, originTenantId, originBlName, originDeviceId, payload)
 }
-func NetworkEventHandler(eventCode int64, eventText, tenantId, nodeName string) {
+func networkEventHandler(eventCode int64, eventText, tenantId, nodeName string) {
 	fmt.Println("onNetworkEvent: ", nodeName, eventText, tenantId)
 }
 func main() {
@@ -27,8 +27,9 @@ func main() {
 	}
 	blname := os.Args[1]
 
-	if err := c_libmsgbus.Init(tenantId, blname, deviceId, "./data",
-		MsgHandler, NetworkEventHandler); err != nil {
+	if err := c_libmsgbus.Init(
+		tenantId, blname, deviceId, "./data",
+		msgHandler, networkEventHandler); err != nil {
 		log.Fatal(err)
 	}
 	defer c_libmsgbus.Destroy()
