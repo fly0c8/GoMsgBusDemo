@@ -14,12 +14,18 @@ const (
 	deviceId = "ltanar"
 )
 
-func msgHandler(msgId, msgType, range_first, range_last, createTs int64, topic, originTenantId, originBlName, originDeviceId, payload string) {
-	fmt.Printf("\n\n===>\nmsgHandler: msgId=%d, msgType=%d, range_first=%d, range_last=%d, createTs=%d\n", msgId,msgType, range_first, range_last, createTs)
-	fmt.Printf("topic=%s, originTenantId=%s, originBlName=%s, originDeviceId=%s, payload=%s\n", topic, originTenantId, originBlName, originDeviceId, payload)
+func msgHandler(
+	msgId, msgType, range_first, range_last, createTs int64,
+	topic, subscribeId, originTenantId, originBlName, originDeviceId, payload string) {
+
+	fmt.Printf("\n\n===>\nmsgHandler: msgId=%d, msgType=%d, range_first=%d, range_last=%d, createTs=%d\n",
+		msgId, msgType, range_first, range_last, createTs)
+	fmt.Printf("topic=%s, originTenantId=%s, originBlName=%s, originDeviceId=%s, payload=%s\n",
+		topic, originTenantId, originBlName, originDeviceId, payload)
 }
 func networkEventHandler(eventCode int64, eventText, tenantId, nodeName string) {
-	fmt.Printf("\n\n===>\nnetworkHandler: eventCode=%d, eventText=%s, tenantId=%s, nodeName=%s\n", eventCode, eventText, tenantId, nodeName)
+	fmt.Printf("\n\n===>\nnetworkHandler: eventCode=%d, eventText=%s, tenantId=%s, nodeName=%s\n",
+		eventCode, eventText, tenantId, nodeName)
 }
 func main() {
 
@@ -39,11 +45,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	headId, err := c_libmsgbus.GetHeadId("testtopic");
+	headId, err := c_libmsgbus.GetHeadId("testtopic")
 	if err != nil {
 		log.Fatal("Cannot get headId for testtopic:", err)
 	}
-	log.Println("===>\n testtopic headId:",headId)
+	log.Println("===>\n testtopic headId:", headId)
 
 	if err := c_libmsgbus.Subscribe("testtopic", "", "1", c_libmsgbus.FLAG_SUBSCRIBE_NEWORIGINFROMSTART); err != nil {
 		log.Fatal(err)
