@@ -1,0 +1,31 @@
+<h1>Hallo Echo</h1>
+<textarea id="sendtext"></textarea>
+<button id="sendbutton">Send</button>
+<script>
+
+    window.onload = () => {
+        const url = `ws://${window.location.host}/ws`;
+        console.log(url)
+
+        const ws = new WebSocket(url);
+        const sendtext = this.document.getElementById("sendtext");
+        const sendbutton = this.document.getElementById("sendbutton");
+
+        sendbutton.onclick = () => {
+            console.log("sendbutton clicked, sending:"+sendtext.value);
+            ws.send(sendtext.value);
+        }
+
+        ws.onopen = () => {
+            console.log("ws open");
+        }
+        ws.onclose = () => {
+            console.log("ws close");
+        }
+        ws.onmessage = (msg) => {
+            console.log(msg.data);
+        }
+    }
+
+
+</script>
